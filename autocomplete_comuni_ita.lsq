@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+ <LimeSurveyDocType>Question</LimeSurveyDocType>
+ <DBVersion>359</DBVersion>
+ <languages>
+  <language>it</language>
+ </languages>
+ <questions>
+  <fields>
+   <fieldname>qid</fieldname>
+   <fieldname>parent_qid</fieldname>
+   <fieldname>sid</fieldname>
+   <fieldname>gid</fieldname>
+   <fieldname>type</fieldname>
+   <fieldname>title</fieldname>
+   <fieldname>question</fieldname>
+   <fieldname>preg</fieldname>
+   <fieldname>help</fieldname>
+   <fieldname>other</fieldname>
+   <fieldname>mandatory</fieldname>
+   <fieldname>question_order</fieldname>
+   <fieldname>language</fieldname>
+   <fieldname>scale_id</fieldname>
+   <fieldname>same_default</fieldname>
+   <fieldname>relevance</fieldname>
+   <fieldname>modulename</fieldname>
+  </fields>
+  <rows>
+   <row>
+    <qid><![CDATA[3480]]></qid>
+    <parent_qid><![CDATA[0]]></parent_qid>
+    <sid><![CDATA[738126]]></sid>
+    <gid><![CDATA[210]]></gid>
+    <type><![CDATA[S]]></type>
+    <title><![CDATA[ComuniAutoC]]></title>
+    <question><![CDATA[Inserire le prime lettere del Comune (almeno 3) - lettura da csv online
+<style type="text/css">@import "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css";
+</style>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.9/jquery.csv.min.js"></script> <script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js></script> <script type="text/javascript" charset="utf-8">
+
+  	$(document).on('ready pjax:scriptcomplete',function(){
+		var qID = {QID};
+		var surveyRoot = location.pathname.split('index.php')[0];
+
+		//carica il csv da cartella files della survey (pre-caricare il csv)
+      	//var url = surveyRoot+"upload/surveys/"+{SID}+"/files/comuni_ita.csv";
+      	//carica il csv da sito ls-ita
+      	var url = "https://www.cervelletta.it/ls-ita/data/comuni_ita.csv";
+       
+      // Create an array to hold the data
+		var elenco_arr= new Array();
+
+		// Grab the CSV contents
+		$.get(url,function(data){
+
+			// Convert CSV contents to an array of arrays
+			fullArray = $.csv.toArrays(data);
+
+			// Load the data array
+			$(fullArray).each(function(i, item){
+				elenco_arr.push(item[0]);
+			});
+
+			// Initialise the autocomplete plugin
+			$('#question'+qID+' input[type="text"]').autocomplete({
+				//source: elenco_arr,
+              	
+              //inizio modifica per ricerca prima lettera
+              	source: function( request, response ) {
+          
+                    var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+          			response( $.grep( elenco_arr, function( item ){
+              		return matcher.test( item );
+          		}) );
+      			},
+              //fine modifica per ricerca prima lettera
+              	minLength: 3,
+				change: function(event, ui) {
+					if(!ui.item){ // Nothing matched in the data array so clear the value
+						$(this).val('');
+					}
+					currentVal = $(this).val();
+				},
+              	response: function(event, ui) {
+					if($(ui.content).size() == 0){ // Nothing found in the data array so revert to last value
+						$(this).val(currentVal);
+						setTimeout(function() {
+							if(currentVal != '') {
+								$('input.text', thisQuestion).autocomplete('search');
+								//currentVal == '';
+							}
+						}, 200);
+					}
+					else {
+						currentVal = $(this).val();
+					}
+				}
+
+			//});
+				}).on('keyup', function(e) {
+					if($.trim($(this).val()) == '') {
+				 		$(this).val('');
+						currentVal = $(this).val();
+					}
+				});
+          
+		});
+	});
+
+</script>]]></question>
+    <preg/>
+    <help/>
+    <other><![CDATA[N]]></other>
+    <mandatory><![CDATA[N]]></mandatory>
+    <question_order><![CDATA[2]]></question_order>
+    <language><![CDATA[it]]></language>
+    <scale_id><![CDATA[0]]></scale_id>
+    <same_default><![CDATA[0]]></same_default>
+    <relevance><![CDATA[1]]></relevance>
+    <modulename/>
+   </row>
+  </rows>
+ </questions>
+</document>
